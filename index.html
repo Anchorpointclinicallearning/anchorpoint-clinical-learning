@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnchorPoint Clinical Learning</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #020617;
+      color: #e5eef7;
+      line-height: 1.6;
+    }
+    .hero {
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.22), transparent 32%),
+        radial-gradient(circle at 80% 20%, rgba(168,85,247,0.18), transparent 28%),
+        linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(2,6,23,1));
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .container {
+      width: min(1200px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+    .hero-grid,
+    .two-col,
+    .cta-grid {
+      display: grid;
+      gap: 32px;
+    }
+    .hero-grid { grid-template-columns: 1.15fr 0.85fr; padding: 80px 0; align-items: center; }
+    .two-col { grid-template-columns: 0.9fr 1.1fr; }
+    .cta-grid { grid-template-columns: 1.15fr 0.85fr; align-items: center; }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .logo-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(103,232,249,0.12);
+      border: 1px solid rgba(103,232,249,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a5f3fc;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 780px;
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.95;
+      color: #a5f3fc;
+    }
+    .subheadline {
+      margin-top: 18px;
+      max-width: 760px;
+      font-size: 28px;
+      color: #cbd5e1;
+    }
+    .lead {
+      margin-top: 24px;
+      max-width: 760px;
+      font-size: 20px;
+      color: #cbd5e1;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .btn-primary {
+      background: white;
+      color: #0f172a;
+    }
+    .btn-secondary {
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.05);
+      color: white;
+    }
+    .mini-grid,
+    .cards,
+    .quote-grid,
+    .offer-grid,
+    .feature-grid,
+    .stat-grid {
+      display: grid;
+      gap: 18px;
+    }
+    .mini-grid { grid-template-columns: repeat(3, 1fr); margin-top: 34px; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .quote-grid,
+    .feature-grid { grid-template-columns: repeat(3, 1fr); }
+    .offer-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .card, .glass, .feature-card, .quote-card, .offer-card, .panel, .form-panel {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+    }
+    .glass, .card, .feature-card, .quote-card, .offer-card, .panel { padding: 24px; }
+    .card h3, .feature-card h3, .panel h2 { margin-top: 0; }
+    .preview-wrap {
+      position: relative;
+    }
+    .preview-glow {
+      position: absolute;
+      inset: -20px;
+      border-radius: 34px;
+      background: rgba(56,189,248,0.08);
+      filter: blur(40px);
+    }
+    .preview {
+      position: relative;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+    }
+    .preview-inner {
+      border-radius: 24px;
+      padding: 24px;
+      min-height: 560px;
+      background:
+        linear-gradient(180deg, rgba(14,165,233,0.16), rgba(15,23,42,0.82)),
+        radial-gradient(circle at top, rgba(255,255,255,0.16), transparent 35%);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .preview-shell {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(2,6,23,0.55);
+      padding: 24px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(103,232,249,0.12);
+      border: 1px solid rgba(103,232,249,0.18);
+      color: #d9faff;
+      margin-bottom: 14px;
+    }
+    .status-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(74,222,128,0.12);
+      border: 1px solid rgba(74,222,128,0.22);
+      color: #d1fae5;
+    }
+    .section {
+      padding: 68px 0;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 12px;
+      color: rgba(165,243,252,0.8);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 40px;
+    }
+    .muted { color: #cbd5e1; }
+    .feature-card .tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(232,121,249,0.12);
+      border: 1px solid rgba(232,121,249,0.16);
+      color: #f5d0fe;
+    }
+    .preview-link {
+      color: #a5f3fc;
+      font-weight: 600;
+      margin-top: 18px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .cta-box {
+      padding: 32px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(168,85,247,0.12), rgba(15,23,42,0.9));
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .form-panel {
+      padding: 24px;
+      background: rgba(2,6,23,0.4);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      font-size: 15px;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    .submit {
+      width: 100%;
+      padding: 14px 18px;
+      border: 0;
+      border-radius: 14px;
+      background: white;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .small { font-size: 14px; }
+    @media (max-width: 980px) {
+      .hero-grid, .two-col, .cta-grid, .quote-grid, .feature-grid { grid-template-columns: 1fr; }
+      .mini-grid, .offer-grid, .cards, .stat-grid { grid-template-columns: 1fr; }
+      .hero-grid { padding: 56px 0; }
+      .subheadline { font-size: 22px; }
+      .lead { font-size: 18px; }
+      .section-title { font-size: 32px; }
+      .preview-inner { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="logo-row">
+          <div class="logo-box">AP</div>
+          <div class="small muted">Nursing Education Resources</div>
+        </div>
+
+        <h1>AnchorPoint Clinical Learning</h1>
+        <div class="subheadline">Interactive nursing education that mirrors real clinical decision-making</div>
+        <div class="lead">Cinematic, scenario-based learning tools for pharmacology, clinical reasoning, and scholarship education. Built to engage learners, support faculty, and bring online nursing content to life.</div>
+
+        <div class="buttons">
+          <a class="btn btn-primary" href="#featured">View Featured Modules</a>
+          <a class="btn btn-secondary" href="#catalog">Explore the Catalog</a>
+        </div>
+
+        <div class="mini-grid">
+          <div class="glass">
+            <h3>Immersive clinical learning</h3>
+            <div class="muted">Scenario-based nursing education resources designed to strengthen clinical judgment, pharmacology reasoning, and engagement.</div>
+          </div>
+          <div class="glass">
+            <h3>Built for real courses</h3>
+            <div class="muted">Interactive modules, memory anchors, branching cases, and faculty-ready learning assets that fit online nursing education.</div>
+          </div>
+          <div class="glass">
+            <h3>Ready to showcase</h3>
+            <div class="muted">A clean one-page presence for previews, pilot examples, and future outreach to schools and partners.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-wrap">
+        <div class="preview-glow"></div>
+        <div class="preview card">
+          <div class="top-row">
+            <div>
+              <div class="eyebrow">Preview</div>
+              <h2 style="margin:0;">Signature learning experience</h2>
+            </div>
+            <div class="status-pill">Pilot ready</div>
+          </div>
+
+          <div class="preview-inner">
+            <div class="preview-shell">
+              <div>
+                <div class="pill">Outpost RX</div>
+                <h3 style="font-size: 34px; margin:0 0 12px;">The Antimicrobial Mission</h3>
+                <div class="muted">High-stakes decision points, layered rationale, and immersive visuals that turn pharmacology review into a guided mission.</div>
+              </div>
+              <div class="stat-grid">
+                <div class="glass">Scenario-based</div>
+                <div class="glass">Narrated design</div>
+                <div class="glass">Faculty friendly</div>
+                <div class="glass">Engagement focused</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow">Student &amp; Faculty Feedback</div>
+      <h2 class="section-title">What learners are saying</h2>
+
+      <div class="quote-grid">
+        <div class="quote-card">
+          <p>“This helped me actually understand the why behind the medications instead of just memorizing them.”</p>
+          <div class="small muted">– Nursing Student</div>
+        </div>
+        <div class="quote-card">
+          <p>“I am a visual learner, and this made everything click in a way lectures never did.”</p>
+          <div class="small muted">– Nursing Student</div>
+        </div>
+        <div class="quote-card">
+          <p>“The memory anchors for week 4 are EXCELLENT!! I just wanted to thank you for taking the time to create this fun, interactive tool to help us learn. Well done!”</p>
+          <div class="small muted">– Nursing Student</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="catalog">
+    <div class="container two-col">
+      <div class="panel">
+        <div class="eyebrow">What we build</div>
+        <h2 class="section-title">Learning resources designed to engage, not just deliver content.</h2>
+        <div class="muted">AnchorPoint Clinical Learning focuses on highly visual, interactive nursing education assets that support real course outcomes while giving learners a more memorable experience.</div>
+      </div>
+
+      <div class="offer-grid">
+        <div class="offer-card">Interactive pharmacology modules</div>
+        <div class="offer-card">Memory Anchors with narration</div>
+        <div class="offer-card">Branching clinical case activities</div>
+        <div class="offer-card">Scholarship and DNP learning resources</div>
+        <div class="offer-card">SCORM-ready course assets</div>
+        <div class="offer-card">Faculty pilot previews</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="featured">
+    <div class="container">
+      <div class="top-row" style="align-items:flex-end;">
+        <div>
+          <div class="eyebrow">Featured work</div>
+          <h2 class="section-title" style="margin-bottom:0;">A few strong entry points</h2>
+        </div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="tag">Featured build</div>
+          <h3>Outpost RX: The Antimicrobial Mission</h3>
+          <div class="muted">A cinematic pharmacology experience that blends antimicrobial reasoning, progressive decision points, and immersive visual storytelling.</div>
+          <a class="preview-link" href="#">Preview module →</a>
+        </div>
+        <div class="feature-card">
+          <div class="tag">Interactive module</div>
+          <h3>Endocrine Ascent</h3>
+          <div class="muted">Climb through endocrine concepts using decision-based checkpoints that reinforce mechanisms, treatment logic, and key clinical distinctions.</div>
+          <a class="preview-link" href="#">Preview module →</a>
+        </div>
+        <div class="feature-card">
+          <div class="tag">Scholarship resource</div>
+          <h3>Unlocking Engagement</h3>
+          <div class="muted">A game-style DNP learning experience that moves learners from framework selection to problem, gap, and aim alignment.</div>
+          <a class="preview-link" href="#">Preview module →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-box">
+        <div class="cta-grid">
+          <div>
+            <div class="eyebrow">For faculty and partners</div>
+            <h2 class="section-title">Interested in a pilot, preview, or conversation?</h2>
+            <div class="muted">This site can grow into a simple public-facing home for module previews, course applications, testimonials, and outreach to nursing programs.</div>
+          </div>
+
+          <div class="form-panel">
+            <input type="text" placeholder="Name" />
+            <input type="email" placeholder="Email" />
+            <textarea placeholder="Tell us what kind of learning resource you're interested in"></textarea>
+            <button class="submit">Start the Conversation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
