@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ultimate 3P Pathophysiology Challenge</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#071426;color:#eef7ff}
+.wrap{max-width:1180px;margin:auto;padding:28px}
+.hero{background:linear-gradient(135deg,#102b4e,#14213d);border:1px solid #375b7d;border-radius:20px;padding:28px;box-shadow:0 16px 40px #0007}
+h1{margin:0 0 8px;font-size:clamp(28px,4vw,48px)} .sub{font-size:18px;line-height:1.5;color:#cfe7f7}
+.badge{display:inline-block;background:#f4c95d;color:#17202a;font-weight:800;padding:7px 12px;border-radius:999px;margin-bottom:14px}
+.controls{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}
+button{border:0;border-radius:10px;padding:12px 18px;font-weight:800;cursor:pointer;font-size:15px}
+.check{background:#ffb703} .hint{background:#6ee7b7} .reset{background:#d7e3f0}
+.score{margin-left:auto;background:#0b2038;border:1px solid #365675;padding:12px 16px;border-radius:10px;font-weight:700}
+.unit{margin:20px 0;background:#0b2038;border:1px solid #294d70;border-radius:16px;overflow:hidden}
+.unit h2{margin:0;padding:14px 18px;background:#102c4b;font-size:20px}
+.item{display:grid;grid-template-columns:42px 1fr;gap:12px;padding:16px 18px;border-top:1px solid #1d3a56}
+.num{width:34px;height:34px;border-radius:50%;background:#1e466a;display:grid;place-items:center;font-weight:800}
+.clue{line-height:1.45;margin-bottom:10px;color:#e5f2fb}
+.letters{display:flex;gap:5px;flex-wrap:wrap}
+.letters input{width:34px;height:38px;text-align:center;text-transform:uppercase;font-weight:800;font-size:18px;border-radius:6px;border:2px solid #7194af;background:white;color:#071426}
+.letters input.good{background:#c7f9cc;border-color:#38a169} .letters input.bad{background:#ffd6d6;border-color:#e63946}
+.status{min-height:28px;font-weight:800;font-size:17px;margin:12px 0}
+.footer{text-align:center;color:#9bb7ca;margin:28px 0 10px;font-size:13px}
+@media(max-width:600px){.wrap{padding:14px} .score{margin-left:0} .letters input{width:30px;height:35px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<div class="badge">WEEK 8 • 3P REVIEW</div>
+<h1>🏆 The Ultimate 3P Pathophysiology Challenge</h1>
+<div class="sub">Seven units. Twenty-one clinical clues. No grade. Use what you know about the mechanism, pattern, and hallmark finding to identify each answer. If you get stuck, take a hint and keep moving.</div>
+<div class="controls">
+<button class="check" onclick="checkAll()">CHECK ANSWERS</button>
+<button class="hint" onclick="giveHint()">GIVE ME A HINT</button>
+<button class="reset" onclick="resetAll()">RESET CHALLENGE</button>
+<div class="score" id="score">0 / 21 complete</div>
+</div>
+<div class="status" id="status"></div>
+</div>
+<div id="game"></div>
+<div class="footer">AnchorPoint Clinical Learning • Pathophysiology Review</div>
+</div>
+<script>
+const items=[{"answer": "KUSSMAUL", "clue": "Deep, rapid breathing appears as compensation when metabolic acidosis drives the respiratory system to lower CO2.", "unit": 1}, {"answer": "CORPULMONALE", "clue": "Long-standing pulmonary hypertension from chronic lung disease eventually strains and enlarges the right side of the heart.", "unit": 1}, {"answer": "RESTRICTIVE", "clue": "A pulmonary pattern with reduced lung compliance and total lung capacity but a normal or increased FEV1/FVC ratio.", "unit": 1}, {"answer": "DIC", "clue": "A septic patient develops simultaneous widespread clotting and bleeding, with low platelets, low fibrinogen, prolonged PT/aPTT, and an elevated D-dimer.", "unit": 2}, {"answer": "TROPONIN", "clue": "This biomarker rises when myocardial cells are injured and helps support the diagnosis of an acute MI.", "unit": 2}, {"answer": "VIRCHOW", "clue": "Think stasis, endothelial injury, and hypercoagulability. The name attached to this classic thrombosis triad.", "unit": 2}, {"answer": "KETOACIDOSIS", "clue": "Severe insulin deficiency triggers lipolysis and ketone production, producing the metabolic acidosis seen in DKA.", "unit": 3}, {"answer": "GRAVES", "clue": "TSH-receptor stimulating antibodies drive excess T3 and T4 while TSH becomes suppressed.", "unit": 3}, {"answer": "SIADH", "clue": "Excess ADH causes water retention, dilutional hyponatremia, and risk for cerebral edema.", "unit": 3}, {"answer": "SECRETIN", "clue": "Acidic chyme entering the duodenum stimulates this hormone, which promotes pancreatic bicarbonate secretion.", "unit": 4}, {"answer": "CROHN", "clue": "Transmural inflammation with skip lesions can occur anywhere in the GI tract.", "unit": 4}, {"answer": "BARRETT", "clue": "Chronic GERD can cause this metaplastic change of the distal esophagus, increasing adenocarcinoma risk.", "unit": 4}, {"answer": "GOUT", "clue": "Monosodium urate crystals activate the NLRP3 inflammasome and IL-1\u03b2, producing an intensely inflammatory arthritis.", "unit": 5}, {"answer": "RHABDOMYOLYSIS", "clue": "Extensive skeletal muscle breakdown releases myoglobin and can lead to acute kidney injury and hyperkalemia.", "unit": 5}, {"answer": "OSTEOMALACIA", "clue": "Vitamin D deficiency can produce defective mineralization of bone rather than simply reduced bone mass.", "unit": 5}, {"answer": "MYASTHENIA", "clue": "Fatigable skeletal muscle weakness results when autoantibodies disrupt postsynaptic acetylcholine receptor function.", "unit": 6}, {"answer": "PARKINSON", "clue": "Degeneration of dopamine-producing neurons in the substantia nigra underlies this movement disorder.", "unit": 6}, {"answer": "DELIRIUM", "clue": "An acutely ill older adult develops sudden, fluctuating inattention and altered cognition over hours to days.", "unit": 6}, {"answer": "POSTRENAL", "clue": "Creatinine rises after urinary retention from an obstructed outflow tract; relieving the obstruction improves kidney function. This is the AKI category.", "unit": 7}, {"answer": "NEPHROTIC", "clue": "Heavy protein loss through the glomerulus leads to hypoalbuminemia, edema, and hyperlipidemia.", "unit": 7}, {"answer": "VARICOCELE", "clue": "A patient has a painless scrotal finding described as a 'bag of worms,' commonly on the left and associated with infertility.", "unit": 7}];
+const names={1:"Pulmonary",2:"Cardiovascular & Hematologic",3:"Endocrine",4:"GI & Hepatobiliary",5:"Musculoskeletal",6:"Neurologic & Mental Health",7:"Renal, Urologic & Male Reproductive"};
+const game=document.getElementById('game');
+let q=0;
+for(let u=1;u<=7;u++){
+ const box=document.createElement('section'); box.className='unit';
+ box.innerHTML=`<h2>Unit ${u} • ${names[u]}</h2>`;
+ items.filter(x=>x.unit===u).forEach(item=>{
+   q++; const row=document.createElement('div'); row.className='item'; row.dataset.answer=item.answer;
+   row.innerHTML=`<div class="num">${q}</div><div><div class="clue">${item.clue}</div><div class="letters"></div></div>`;
+   const letters=row.querySelector('.letters');
+   [...item.answer].forEach((ch,i)=>{
+     const inp=document.createElement('input'); inp.maxLength=1; inp.dataset.i=i;
+     inp.setAttribute('aria-label',`Question ${q} letter ${i+1}`);
+     inp.addEventListener('input',e=>{e.target.value=e.target.value.toUpperCase().replace(/[^A-Z]/g,''); e.target.classList.remove('good','bad'); if(e.target.value) focusNext(e.target); updateScore();});
+     inp.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!e.target.value) focusPrev(e.target)});
+     letters.appendChild(inp);
+   });
+   box.appendChild(row);
+ });
+ game.appendChild(box);
+}
+function focusNext(inp){let all=[...document.querySelectorAll('.letters input')],i=all.indexOf(inp); if(i<all.length-1) all[i+1].focus();}
+function focusPrev(inp){let all=[...document.querySelectorAll('.letters input')],i=all.indexOf(inp); if(i>0) all[i-1].focus();}
+function rows(){return [...document.querySelectorAll('.item')];}
+function answerOf(row){return [...row.querySelectorAll('input')].map(x=>x.value).join('');}
+function updateScore(){
+ let correct=rows().filter(r=>answerOf(r)===r.dataset.answer).length;
+ document.getElementById('score').textContent=`${correct} / ${items.length} complete`;
+ return correct;
+}
+function checkAll(){
+ let correct=0;
+ rows().forEach(r=>{
+   const ans=r.dataset.answer, ins=[...r.querySelectorAll('input')];
+   if(answerOf(r)===ans) correct++;
+   ins.forEach((x,i)=>{x.classList.remove('good','bad'); if(x.value) x.classList.add(x.value===ans[i]?'good':'bad');});
+ });
+ updateScore();
+ const s=document.getElementById('status');
+ if(correct===items.length) s.textContent="🎉 You did it! Seven units conquered. Go show that 3P exam what you know.";
+ else s.textContent=`You have ${correct} of ${items.length} correct. Fix the red letters, use a hint if you need one, and keep going.`;
+}
+function giveHint(){
+ let candidates=[];
+ rows().forEach(r=>{
+   const ans=r.dataset.answer, ins=[...r.querySelectorAll('input')];
+   ins.forEach((x,i)=>{if(x.value!==ans[i]) candidates.push([x,ans[i]])});
+ });
+ if(!candidates.length){document.getElementById('status').textContent="You don't need a hint — you've got them all! 🎉"; return;}
+ const [x,ch]=candidates[Math.floor(Math.random()*candidates.length)];
+ x.value=ch; x.classList.remove('bad'); x.classList.add('good'); x.scrollIntoView({behavior:'smooth',block:'center'});
+ updateScore(); document.getElementById('status').textContent="One letter revealed. That's all you're getting for now. 😉";
+}
+function resetAll(){
+ document.querySelectorAll('.letters input').forEach(x=>{x.value='';x.classList.remove('good','bad')});
+ document.getElementById('status').textContent=''; updateScore(); window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body></html>
